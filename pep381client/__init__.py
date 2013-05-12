@@ -1,6 +1,7 @@
 from __future__ import with_statement
 import cPickle, os, xmlrpclib, time, urllib2, httplib, socket
 from xml.etree import ElementTree
+from functools import partial
 import xml.parsers.expat
 import sqlite
 
@@ -10,6 +11,56 @@ BASE = 'http://'+pypi
 SIMPLE = BASE + '/simple/'
 version = '1.5'
 UA = 'pep381client/'+version
+
+# package filter
+package_filter_count = [0]
+def package_filter(pkg,st=None):
+    if st is not None and not st.quiet:
+        global package_filter_count
+        if package_filter_count[0] == 0:
+            print "package_filter: started filtering OSS-only packages"
+        if package_filter_count[0] % 500 == 0:
+            print "package_filter: processed %d packages" % package_filter_count[0]
+        package_filter_count[0] += 1
+
+    try:
+        last_release = xmlrpc().package_releases(pkg)[-1]
+    except IndexError:
+        # if no releases available, ignore this package
+        return False
+    rel_data = xmlrpc().release_data(pkg,last_release) 
+
+    osi_approved = False
+    for c in rel_data['classifiers']:
+        if c.startswith('License :: OSI Approved'):
+            osi_approved = True
+
+    if not osi_approved:
+        if (rel_data['license'] in set(['BSD','GPL','MIT','ZPL 2.1','LGPL','GPLv3',
+          'MIT License','BSD License','GPL version 2','ZPL','PSF',
+          'Apache License 2.0','Apache 2.0','GPL-3','Apache','MIT license',
+          'Apache License, Version 2.0','GPLv3+','gpl','Apache Software License',
+          'LGPLv3','Public Domain','Simplified BSD','GPLv2','GPL2','MIT/X11',
+          'GPL v3','GNU GPL v3','GNU GPL-3 or later','GNU GPL v2','GNU LGPL',
+          'GPL v2','GNU General Public License (GPL)',
+          'GNU LESSER GENERAL PUBLIC LICENSE, Version 3','New BSD License','LGPL v3',
+          'GPL3','The MIT License (MIT)','GNU Lesser General Public License (LGPL)',
+          'GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1','Apache2','GNU GPL, GNU LGPL',
+          'WTFPL','LGPL License','Public Domain (WTFPL)','GPL3, see LICENSE.txt',
+          'CDDL','BSD 3 Clause','3-clause BSD','AGPLv3','New BSD license',
+          'GNU General Public License version 3.0 (GPLv3)','GNU GPLv2',
+          'Apache License','GNU GPL v2 or later','Boost Software License','MPL',
+          'BSD (3-clause)','http://www.fsf.org/licensing/licenses/lgpl.txt',
+          'BSD-style license','GNU LGPL v.3','LGPLv2+','LGPLv3+','GNU Public License v3',
+          'http://www.apache.org/licenses/LICENSE-2.0','public domain',
+          'GNU General Public License version 3 or later','GPL 2',
+          'GNU Lesser General Public License','LGPL-3.0',
+          'MIT License, Zope Public License (rest.py), BSD License (odict.py)',
+          'License :: OSI Approved :: MIT License','Simplified BSD License',
+          'AGPLv3 or Permissive for use with Open Source databases','GPL version 3',
+          ])):
+            osi_approved = True
+    return osi_approved
 
 # Helpers
 
@@ -94,6 +145,7 @@ class Synchronization:
         status.homedir = targetdir
         status.last_started = now()
         status.projects_to_do = set(xmlrpc().list_packages())
+        status.projects_to_do = filter(partial(package_filter,st=status), status.projects_to_do)
         status.storage = storage or sqlite.SqliteStorage(os.path.join(status.homedir, "files"))
         status.store()
         return status
@@ -132,6 +184,7 @@ class Synchronization:
                 return
             for change in changes:
                 self.projects_to_do.add(change[0])
+            self.projects_to_do = filter(partial(package_filter,st=self), self.projects_to_do)
             self.copy_simple_page('')
             self.store()
         # sort projects to allow for repeatable runs
