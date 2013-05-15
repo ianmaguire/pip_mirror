@@ -145,7 +145,7 @@ class Synchronization:
         status.homedir = targetdir
         status.last_started = now()
         status.projects_to_do = set(xmlrpc().list_packages())
-        status.projects_to_do = filter(partial(package_filter,st=status), status.projects_to_do)
+        status.projects_to_do = set( filter(partial(package_filter,st=status), status.projects_to_do) )
         status.storage = storage or sqlite.SqliteStorage(os.path.join(status.homedir, "files"))
         status.store()
         return status
@@ -184,7 +184,7 @@ class Synchronization:
                 return
             for change in changes:
                 self.projects_to_do.add(change[0])
-            self.projects_to_do = filter(partial(package_filter,st=self), self.projects_to_do)
+            self.projects_to_do = set( filter(partial(package_filter,st=self), self.projects_to_do) )
             self.copy_simple_page('')
             self.store()
         # sort projects to allow for repeatable runs
