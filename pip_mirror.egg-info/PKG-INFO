@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: pip-mirror
-Version: 0.1
+Version: 0.2
 Summary: Mirroring tool that implements a local pip mirror via PyPi
 Home-page: https://github.com/ianmaguire/pip_mirror
 Author: Ian Maguire

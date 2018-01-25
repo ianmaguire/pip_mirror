@@ -9,7 +9,7 @@ import sqlite
 pypi = 'pypi.python.org'
 BASE = 'https://'+pypi
 SIMPLE = BASE + '/simple/'
-version = '0.1'
+version = '0.2'
 UA = 'pip_mirror/'+version
 
 # package filter
