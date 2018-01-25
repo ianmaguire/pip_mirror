@@ -7,7 +7,7 @@ from pip_mirror import version
 setup(name='pip_mirror',
       version=version,
       description='Mirroring tool that implements a local pip mirror via PyPi',
-      long_description=open('README').read(),
+      long_description=open('README.md').read(),
       author='Ian Maguire',
       author_email='mr.scalability@gmail.com',
       license = 'Creative Commons version 4.0',
