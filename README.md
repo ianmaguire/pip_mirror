@@ -41,7 +41,7 @@ Contact
 -------
 
 If you have questions or comments, please submit a bug report to
-https://github.com/ianmaguire/pip_mirror/issues/new, or contact me
+https://github.com/ianmaguire/pip_mirror/issues, or contact me
 at mr.scalability@gmail.com
 
 Changes
