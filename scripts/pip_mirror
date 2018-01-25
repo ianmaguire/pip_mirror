@@ -10,7 +10,7 @@ except ImportError:
         sys.path.append(module_path)
     import pip_mirror
 
-opts = optparse.OptionParser(usage="Usage: pip_mirror_run [OPTIONS] <targetdir>")
+opts = optparse.OptionParser(usage="Usage: pip_mirror [OPTIONS] <targetdir>")
 opts.add_option("-q", "--quiet", dest="quiet", action="store_true", default=False,
         help="Don't print status information")
 options, args = opts.parse_args()
@@ -29,4 +29,4 @@ state.quiet = options.quiet
 try:
     state.synchronize()
 except KeyboardInterrupt:
-    print "\nMirroring paused. Resume by restarting pip_mirror_run."
+    print "\nMirroring paused. Resume by restarting pip_mirror."

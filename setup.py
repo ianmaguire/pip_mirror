@@ -3,6 +3,7 @@
 
 from distutils.core import setup
 from pip_mirror import version
+from setuptools import setup
 
 setup(name='pip_mirror',
       version=version,

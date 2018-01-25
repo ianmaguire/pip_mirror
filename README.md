@@ -10,7 +10,7 @@ distribution. Alternatively, 'python setup.py install' could be used.
 The actual mirroring is performed by the pip_mirrorrun script, which
 should be invoked through cron like this::
 
-   */15 *  *   *   *     /path/pip_mirror/pip_mirror_run -q /var/pypi
+   */15 *  *   *   *     /path/pip_mirror/pip_mirror -q /var/pypi
 
 The command line arguments points to root of the data files that
 the mirror creates. An initial run (without the -q option) should

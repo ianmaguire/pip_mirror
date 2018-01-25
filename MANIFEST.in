@@ -1,1 +1,1 @@
-include scripts/pip_mirror_run scripts/processlogs MANIFEST.in
+include scripts/pip_mirror scripts/processlogs MANIFEST.in
