@@ -1,17 +1,17 @@
-#!/usr/bin/env python
+p_mirror_check_files#!/usr/bin/env python
 import sys, os, shutil, optparse, hashlib, time
 from xml.etree import ElementTree
 try:
-    import pep381client
+    import pip_mirror
 except ImportError:
     # See whether we are run out of a source tree
     module_path = os.path.join(os.path.dirname(sys.argv[0]), 
                                '..')
     if os.path.exists(module_path):
         sys.path.append(module_path)
-    import pep381client
+    import pip_mirror
 
-opts = optparse.OptionParser(usage="Usage: pep381checkfiles <targetdir>")
+opts = optparse.OptionParser(usage="Usage: pip_mirror_check_files <targetdir>")
 options, args = opts.parse_args()
 
 if len(args) != 1:
@@ -46,7 +46,7 @@ for package in os.listdir(os.path.join(targetdir, 'web', 'simple')):
             continue
 
 if incomplete_packages:
-    s = pep381client.Synchronization.load(targetdir)
+    s = pip_mirror.Synchronization.load(targetdir)
     for i in range(10):
         if s.storage.find_running():
             print "Synchronization in progress, waiting"
@@ -57,7 +57,7 @@ if incomplete_packages:
     s.storage.commit()
     try:
         # Reload pickled state
-        s = pep381client.Synchronization.load(targetdir)
+        s = pip_mirror.Synchronization.load(targetdir)
         s.projects_to_do.update(incomplete_packages)
         # claim that a synchronization was aborted and 
         # needs to be restarted
@@ -66,4 +66,4 @@ if incomplete_packages:
     finally:
         s.storage.end_running()
         s.storage.commit()
-    print "Todo list updated; run pep381run now"
+    print "Todo list updated; run pip_mirror_run now"

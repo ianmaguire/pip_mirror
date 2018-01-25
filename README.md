@@ -7,10 +7,10 @@ Installation
 It is possible to run this application directly from the source
 distribution. Alternatively, 'python setup.py install' could be used.
 
-The actual mirroring is performed by the pep381run script, which
+The actual mirroring is performed by the pip_mirrorrun script, which
 should be invoked through cron like this::
 
-   */15 *  *   *   *     /path/pep381client/pep381run -q /var/pypi
+   */15 *  *   *   *     /path/pip_mirror/pip_mirror_run -q /var/pypi
 
 The command line arguments points to root of the data files that
 the mirror creates. An initial run (without the -q option) should
@@ -25,7 +25,7 @@ An Apache configuration could read like this::
     CustomLog /var/log/apache2/pypi.log combined
     DocumentRoot /var/pypi/web
     SetEnv PYPITARGET /var/pypi
-    ScriptAlias /sync /path/pep381sync.cgi
+    ScriptAlias /sync /path/pip_mirrorsync.cgi
   </VirtualHost>
 
 Notice that supporting the sync URL requires that the web server
@@ -35,47 +35,17 @@ runs as the mirror user.
 To propagate the download statistics back to the central server,
 processlogs must be run regularly, e.g. through::
 
-   10 7  *   *   *     /path/pep381client/processlogs /var/pypi /var/log/apache2/pypi.log{,.1}
+   10 7  *   *   *     /path/pip_mirror/processlogs /var/pypi /var/log/apache2/pypi.log{,.1}
 
 Contact
 -------
 
 If you have questions or comments, please submit a bug report to
-http://bitbucket.org/loewis/pep381client/issues/new, or contact me
-at martin@v.loewis.de
+https://github.com/ianmaguire/pip_mirror/issues/new, or contact me
+at mr.scalability@gmail.com
 
 Changes
 -------
+1.0 (2018-01-25):
 
-1.5 (2011-05-09):
-
-- Fix mirroring bug that caused unnecessary deletion of files
-- Provide pep381checkfiles script to verify presence and integrity
-  of all files
-
-1.4 (2011-04-27):
-
-- Improve installation procedure (Jannis Leidel)
-- Add support for alternative storage backends (Jacob Kaplan-Moss)
-- Print nicer message for Ctrl-C (Jacob Kaplan-Moss)
-- Add --help option to pep381run (Horst Gutmann)
-- Drop mvindex again
-- Add support for master-initiated sync operations
-- Hotfix processing of empty project names
-
-1.3 (2010-07-06):
-
-- The individual index pages where put into the wrong location; this is
-  now fixed. Users should run 'mvindex /var/pypi' to fix their mirrors.
-
-1.2 (2010-07-06):
-
-- Fix #1 for good.
-
-1.1 (2010-07-05):
-
-- Issue #1: properly setup sqlite connection when initializing mirror.
-
-1.0 (2010-07-05):
-
-- Initial release
+- Forked from pep381_client

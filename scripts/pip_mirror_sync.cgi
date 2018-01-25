@@ -24,8 +24,8 @@ if os.fork() == 0:
     os.close(0)
     os.close(1)
     os.close(2)
-    os.execl(os.path.join(dirname, "pep381run"),
-             os.path.join(dirname, "pep381run"),
+    os.execl(os.path.join(dirname, "pip_mirror_run"),
+             os.path.join(dirname, "pip_mirror_run"),
              "-q", targetdir)
 else:
     # parent process; print status and exit
